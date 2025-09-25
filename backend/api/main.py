@@ -1,0 +1,51 @@
+import os
+
+from db.client import DBClient
+from fastapi import FastAPI, Form, Request
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import HTMLResponse
+from fastapi.templating import Jinja2Templates
+
+app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 実運用ではS3/CloudFrontのURLを指定
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+templates = Jinja2Templates(directory="templates")
+
+supabase_url = os.environ.get("SUPABASE_URL", "")
+supabase_key = os.environ.get("SUPABASE_KEY", "")
+db_client = DBClient(supabase_url, supabase_key)
+
+
+@app.get("/random", response_class=HTMLResponse)
+async def random(request: Request):
+    results = db_client.get_videos(limit=10)
+
+    return templates.TemplateResponse(
+        "results.html",
+        {"request": request, "results": results},
+    )
+
+
+@app.post("/search", response_class=HTMLResponse)
+async def search(
+    request: Request,
+    limit: int = Form(""),
+    min_published_at: str = Form(""),
+    max_published_at: str = Form(""),
+):
+    results = db_client.get_videos(
+        limit=limit,
+        min_published_at=min_published_at,
+        max_published_at=max_published_at,
+    )
+
+    return templates.TemplateResponse(
+        "results.html",
+        {"request": request, "results": results},
+    )
