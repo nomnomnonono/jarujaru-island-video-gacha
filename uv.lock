@@ -521,7 +521,7 @@ wheels = [
 ]
 
 [[package]]
-name = "jarujaru-island-search"
+name = "jarujaru-island-video-gacha"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
