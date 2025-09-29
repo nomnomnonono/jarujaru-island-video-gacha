@@ -4,7 +4,7 @@ from batch.api_client import YoutubeAPIClient
 from db.client import DBClient
 
 
-def main():
+def handler(event, context):  # type: ignore
     api_key = os.environ.get("API_KEY", "")
     channel_id = os.environ.get("CHANNEL_ID", "")
     supabase_url = os.environ.get("SUPABASE_URL", "")
@@ -18,8 +18,5 @@ def main():
     videos = api_client.get_videos(
         playlist_id, latest_video_id=latest_video_id, max_results=5, skip=True
     )
+    print(f"Count: {len(videos)}")
     db_client.insert_videos(videos)
-
-
-if __name__ == "__main__":
-    main()
