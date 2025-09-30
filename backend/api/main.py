@@ -7,17 +7,17 @@ from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from mangum import Mangum
 
+
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-bucket_name = os.environ.get("BUCKET_NAME", "")
-region = os.environ.get("REGION", "")
+cloudfront_url = os.environ.get("CLOUDFRONT_URL", "")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[f"https://{bucket_name}.s3.{region}.amazonaws.com"],
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
-    allow_headers=["*"],
+    allow_headers=["*", "x-api-key"],
 )
 
 supabase_url = os.environ.get("SUPABASE_URL", "")

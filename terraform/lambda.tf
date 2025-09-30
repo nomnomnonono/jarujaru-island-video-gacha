@@ -41,10 +41,9 @@ resource "aws_lambda_function" "api" {
 
   environment {
     variables = {
-      SUPABASE_URL = var.supabase_url
-      SUPABASE_KEY = var.supabase_key
-      BUCKET_NAME  = var.bucket_name
-      REGION       = var.region
+      SUPABASE_URL   = var.supabase_url
+      SUPABASE_KEY   = var.supabase_key
+      CLOUDFRONT_URL = "https://${aws_cloudfront_distribution.s3_distribution.domain_name}"
     }
   }
 

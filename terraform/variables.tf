@@ -42,12 +42,27 @@ variable "api_gateway_name" {
   default = "jarujaru-island-gacha"
 }
 
-variable "api_gateway_route_key" {
-  default = "$default"
+variable "api_gateway_stage_name" {
+  default = "prod"
 }
 
-variable "api_gateway_stage_name" {
-  default = "$default"
+variable "api_throttling_burst_limit" {
+  type    = number
+  default = 20
+}
+
+variable "api_throttling_rate_limit" {
+  type    = number
+  default = 10
+}
+
+variable "api_usage_plan_quota_limit" {
+  type    = number
+  default = 100
+}
+
+variable "api_gateway_api_key_value" {
+  default = "AHCAGDNALSIURAJURAJAHCAGDNALSIURAJURAJ"
 }
 
 variable "supabase_url" {
