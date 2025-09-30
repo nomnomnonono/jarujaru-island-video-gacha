@@ -39,6 +39,9 @@ class DBClient:
         return video_id
 
     def insert_videos(self, videos: list[dict[str, str]]) -> None:
+        if len(videos) == 0:
+            return
+
         _ = self.supabase.table("videos").insert(videos).execute()
 
     def get_videos(
@@ -48,10 +51,12 @@ class DBClient:
             min_published_at=min_published_at, max_published_at=max_published_at
         )
         random_ids = random.sample(ids, min(len(ids), limit))
+        print(random_ids)
 
         result = (
             self.supabase.table("videos").select("*").in_("id", random_ids).execute()
         )
+        print(result)
 
         return result.data
 

@@ -13,14 +13,13 @@ RUN uv pip install --system --no-cache .
 # =========================
 # Runtime stage
 # =========================
-FROM python:3.12-slim
-
-COPY --from=public.ecr.aws/awsguru/aws-lambda-adapter:0.8.4 /lambda-adapter /opt/extensions/lambda-adapter
-COPY --from=builder /usr/local /usr/local
+FROM public.ecr.aws/lambda/python:3.12
 
 ENV TZ=Asia/Tokyo
 
 ENV LAMBDA_TASK_ROOT=/var/task
+
+COPY --from=builder /usr/local/lib/python3.12/site-packages ${LAMBDA_TASK_ROOT}
 
 WORKDIR ${LAMBDA_TASK_ROOT}
 

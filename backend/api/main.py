@@ -5,21 +5,29 @@ from fastapi import FastAPI, Form, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+from mangum import Mangum
 
 app = FastAPI()
+templates = Jinja2Templates(directory="templates")
+
+bucket_name = os.environ.get("BUCKET_NAME", "")
+region = os.environ.get("REGION", "")
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # 実運用ではS3/CloudFrontのURLを指定
+    allow_origins=[f"https://{bucket_name}.s3.{region}.amazonaws.com"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-templates = Jinja2Templates(directory="templates")
-
 supabase_url = os.environ.get("SUPABASE_URL", "")
 supabase_key = os.environ.get("SUPABASE_KEY", "")
 db_client = DBClient(supabase_url, supabase_key)
+
+
+@app.get("/")
+async def health_check():
+    return {"message": "success"}
 
 
 @app.get("/random", response_class=HTMLResponse)
@@ -49,3 +57,6 @@ async def search(
         "results.html",
         {"request": request, "results": results},
     )
+
+
+handler = Mangum(app)
